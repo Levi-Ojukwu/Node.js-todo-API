@@ -17,7 +17,7 @@ export async function addTodo(req: AuthRequest, res: Response) {
 
 		// Check is the request body are missing
 		if (!title || !description || !deadline) {
-			return res.status(401).json({ message: "All fields required" });
+			return res.status(400).json({ message: "All fields required" });
 		}
 
 		// Create a new todo post
