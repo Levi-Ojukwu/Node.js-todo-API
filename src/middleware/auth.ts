@@ -19,12 +19,12 @@ export function requireAuth(
 		const header = req.headers["authorization"];
 
 		// Validate the header
-		if (!header || !header.startsWith("Bearer")) {
+		if (!header || !header.startsWith("Bearer ")) {
 			return res.status(401).json({ message: "Unauthorized" });
 		}
 
 		// Extract the token if the bearer is valid. Remove bearer prefix and trim the whitespace
-		const token = header.replace("Bearer", "").trim();
+		const token = header.replace("Bearer ", "").trim();
 
 		// A secret variable to store our jwt secret
 		const secret = process.env["JWT_SECRET"];
@@ -42,6 +42,7 @@ export function requireAuth(
 		// Pass control to the next middleware function in the chain
 		next();
 	} catch (error) {
-        return res.status(401).json({ message: "Invalid token" })
-    }
+		console.error(error);
+		return res.status(401).json({ message: "Invalid token" });
+	}
 }

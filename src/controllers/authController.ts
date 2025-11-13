@@ -145,7 +145,7 @@ export async function updateProfile (req: AuthRequest, res: Response) {
 		await user.save();
 
 		// Return success response
-		return res.status(200).json({ message: "User profile updated successfully" }) 
+		return res.status(200).json({ message: "User profile updated successfully", user }) 
 	} catch (error) {
 		console.error(error);
 		return res.status(500).json({ message: "Failed to update profile" })
