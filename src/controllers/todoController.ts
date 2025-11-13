@@ -55,7 +55,7 @@ export async function getTodo(req: AuthRequest, res: Response) {
 		const { id } = req.params as { id: string };
 
 		// Use Todo.findById passing in the ID to find the todo
-		const todo = await Todo.findById(id);
+		const todo = await Todo.findById({ _id: id, user: req.userId });
 
 		// Check if the todo exists
 		if (!todo) {
@@ -76,7 +76,7 @@ export async function updateTodo(req: AuthRequest, res: Response) {
 		// Destructure the id from the request parameters
 		const { id } = req.params as { id: string };
 
-		const todo: ITodo | null = await Todo.findById(id);
+		const todo: ITodo | null = await Todo.findById({ _id: id, user: req.userId });
 
 		// Check if the todo exists
 		if (!todo) {
@@ -158,7 +158,7 @@ export async function deleteTodo(req: AuthRequest, res: Response) {
 		const todo = await Todo.findOneAndDelete({ _id: id, user: req.userId });
 
 		if (!todo) {
-			return res.status(400).json({ message: "Todo not found" });
+			return res.status(404).json({ message: "Todo not found" });
 		}
 
 		return res.status(200).json({ message: "Todo deleted successfully" });
@@ -166,3 +166,5 @@ export async function deleteTodo(req: AuthRequest, res: Response) {
         return res.status(500).json({ message: "Failed to delete todo" });
     }
 }
+
+export default { addTodo, listTodos, getTodo, updateTodo, markTodoCompleted, deleteTodo }

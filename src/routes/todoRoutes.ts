@@ -5,8 +5,8 @@ import { requireAuth } from "../middleware/auth";
 const router = Router();
 
 router.post("/", requireAuth, addTodo);
-router.get("/", listTodos);
-router.get("/:id", getTodo);
+router.get("/", requireAuth, listTodos);
+router.get("/:id", requireAuth, getTodo);
 router.patch("/:id", requireAuth, updateTodo);
 router.patch("/:id/complete", requireAuth, markTodoCompleted);
 router.delete("/:id", requireAuth, deleteTodo);

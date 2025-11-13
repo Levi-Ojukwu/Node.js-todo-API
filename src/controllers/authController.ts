@@ -4,6 +4,7 @@ import type { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/User";
+import { AuthRequest } from "../middleware/auth";
 
 // Method to register a new user
 export async function register(req: Request, res: Response) {
@@ -93,9 +94,62 @@ export async function login(req: Request, res: Response) {
 	}
 }
 
-// Method to logout
-export async function logout (req: Request, res: Response) {
-    try {
+// Method to get user profile
+export async function getProfile (req: AuthRequest, res: Response) {
+	try {
+		// Find the currently logged-in user and return all their details except the password 
+		const user = await User.findById(req.userId).select("-passwordHash");
 
-    } catch (error) {}
+		// Check if user exists
+		if (!user) {
+			return res.status(404).json({ message: "User not found" });
+		}
+
+		// Return the user
+		return res.status(200).json(user) 
+	} catch (error) {
+		console.error(error);
+		return res.status(500).json({ message: "Failed to get user profile" })
+	}
 }
+
+export async function updateProfile (req: AuthRequest, res: Response) {
+	try {
+		// Destructure the { name, password, and profile_image } from the request body
+		const { name, password, profile_image } = req.body;
+
+		// Find user by ID
+		const user = await User.findById(req.userId);
+		if (!user) {
+			return res.status(404).json({ message: "User not found" });
+		}
+
+		// Check if the name field is of string type and update the name 
+		if (typeof name === "string" && name.trim() !== "") {
+			user.name = name.trim();
+		}
+
+		// Check if the password field is of string type, then update the password and harsh the new password
+		if (typeof password === "string" && password.trim() !== "") {
+			const salt = await bcrypt.genSalt(10);
+
+			user.passwordHash = await bcrypt.hash(password, salt);
+		}
+
+		// Check if the profile_image field is of type string, then update the imaage
+		if (typeof profile_image === "string" && profile_image.trim() !== "") {
+			user.profile_image = profile_image;
+		}
+
+		// Save the update
+		await user.save();
+
+		// Return success response
+		return res.status(200).json({ message: "User profile updated successfully" }) 
+	} catch (error) {
+		console.error(error);
+		return res.status(500).json({ message: "Failed to update profile" })
+	}
+}
+
+export default { register, login, getProfile, updateProfile }

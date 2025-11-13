@@ -13,7 +13,7 @@ export interface ITodo extends Document {
 
 const TodoSchema: Schema<ITodo> = new Schema<ITodo>({
     title: { type: String, required: true, trim: true },
-    description: { type: String, require: true },
+    description: { type: String, required: true },
     deadline: { type: Date, required: true },
     completedAt: { type: Date, default: null },
     tags: { type: [String], default: []},
