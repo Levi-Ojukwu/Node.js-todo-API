@@ -9,7 +9,7 @@ const uploadDir = path.join(process.cwd(), "uploads");
 // This makes sure our application has a place to store files before trying to save them.
 if (!fs.existsSync(uploadDir)) {
     // Create a directory if it doesn't exist
-    fs.mkdirSync(uploadDir), { recursive: true }
+    fs.mkdirSync(uploadDir, { recursive: true })
 }
 
 // Setup the storage configuration using multer.diskStorage
@@ -28,7 +28,8 @@ const storage = multer.diskStorage({
         const ext = extname(file.originalname);
 
         // Call cb (callback) to return the new unique file name
-        cb(null, `${file.filename}-${uniqueSuffix}${ext}`);
+        cb(null, `${uniqueSuffix}${ext}`);
+
     },
 });
 
@@ -47,7 +48,7 @@ function imageFileFilter(_req: any, file: Express.Multer.File, cb: multer.FileFi
 const upload = multer ({
     storage, // Our storage configuration
     fileFilter: imageFileFilter, // The newly created imageFileFilter function 
-    limits: {fileSize: 5 * 1024 * 1024}, // A limit object to restrict the file size 5mb (5 megabytes)
+    limits: { fileSize: 5 * 1024 * 1024 }, // A limit object to restrict the file size 5mb (5 megabytes)
 })
 
 export default upload;

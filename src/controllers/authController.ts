@@ -136,10 +136,12 @@ export async function updateProfile (req: AuthRequest, res: Response) {
 			user.passwordHash = await bcrypt.hash(password, salt);
 		}
 
-		// Check if the profile_image field is of type string, then update the imaage
-		if (typeof profile_image === "string" && profile_image.trim() !== "") {
-			user.profile_image = profile_image;
-		}
+		// UPDATE IMAGE (THIS WAS MISSING)
+        if (req.file) {
+            user.profile_image = `/uploads/${req.file.filename}`;
+        } else if (typeof profile_image === "string" && profile_image.trim() !== "") {
+            user.profile_image = profile_image.trim();
+        }
 
 		// Save the update
 		await user.save();
