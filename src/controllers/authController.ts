@@ -137,8 +137,9 @@ export async function updateProfile (req: AuthRequest, res: Response) {
 		}
 
 		// UPDATE IMAGE (THIS WAS MISSING)
+		const baseUrl = process.env.BASE_URL || "http://localhost:8080"; 
         if (req.file) {
-            user.profile_image = `/uploads/${req.file.filename}`;
+            user.profile_image = `${baseUrl}/uploads/${req.file.filename}`;
         } else if (typeof profile_image === "string" && profile_image.trim() !== "") {
             user.profile_image = profile_image.trim();
         }

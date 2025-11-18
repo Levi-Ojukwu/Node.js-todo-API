@@ -14,7 +14,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+// app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+app.use("/uploads", express.static(path.resolve("uploads")));
+
 
 // Register you routes
 app.use("/api/auth", authRoutes);
